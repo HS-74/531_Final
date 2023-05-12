@@ -1,0 +1,205 @@
+---
+title: Revisiting the Efficacy of Civic Education with a New Measure of Civic Competence
+author: Hyeonseo Cho
+date: Spring 2023
+output:
+  pdf_document:
+    number_sections: true
+    fig_caption: yes
+    latex_engine: xelatex
+    citation_package: biblatex
+    keep_tex: true
+    fig_height: 8
+    fig_width: 8
+graphics: yes
+geometry: "left=1.25in,right=1.25in,top=1in,bottom=1in"
+mainfont: "Helvetica"
+fontsize: 11pt
+bibliography: classbib.bib
+biblio-style: authoryear-comp
+
+---
+
+
+```{r Loading dataset}
+library(haven)
+F00010733_WVS_Cross_National_Wave_7_spss_v5_0 <- read_sav("~/Downloads/F00010733-WVS_Cross-National_Wave_7_spss_v5_0.zip")
+View(F00010733_WVS_Cross_National_Wave_7_spss_v5_0)
+WVS.5 <- F00010733_WVS_Cross_National_Wave_7_spss_v5_0
+WVS.5 <- as.data.frame(WVS.5)
+str(WVS.5)
+```
+
+```{r Creating Index}
+## Recoding variables
+library(dplyr)
+
+# Items for 'Knowledge' Indicator
+table(WVS.5$Q201)                   ## checking answers and coding scheme
+WVS.5$Q201 <- as.factor(WVS.5$Q201)
+WVS.5$Q202 <- as.factor(WVS.5$Q202)
+WVS.5$Q203 <- as.factor(WVS.5$Q203)
+WVS.5$Q204 <- as.factor(WVS.5$Q204)
+WVS.5$Q205 <- as.factor(WVS.5$Q205)
+WVS.5$Q206 <- as.factor(WVS.5$Q206)
+WVS.5$Q207 <- as.factor(WVS.5$Q207)
+WVS.5$Q208 <- as.factor(WVS.5$Q208)
+
+WVS.5$Q201 <- recode(WVS.5$Q201, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0)
+WVS.5$Q202 <- recode(WVS.5$Q202, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0)
+WVS.5$Q203 <- recode(WVS.5$Q203, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0)
+WVS.5$Q204 <- recode(WVS.5$Q204, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0)
+WVS.5$Q205 <- recode(WVS.5$Q205, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0)
+WVS.5$Q206 <- recode(WVS.5$Q206, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0)
+WVS.5$Q207 <- recode(WVS.5$Q207, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0)
+WVS.5$Q208 <- recode(WVS.5$Q208, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0)
+
+table(WVS.5$Q202) ## to double check
+
+# This way should be less labor-intensive, but somehow not working without giving errors
+#WVS.5 <- WVS.5%>%mutate_if(is.character, as.factor)  ## applying to all items
+#str(WVS.5)
+
+#WVS.5 %>% mutate(Q202=recode(Q202, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0),
+#                 Q203=recode(Q203, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0),
+#                 Q204=recode(Q204, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0),
+#                 Q205=recode(Q205, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0),
+#                 Q206=recode(Q206, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0),
+#                 Q207=recode(Q207, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0),
+#                 Q208=recode(Q208, '1' = 1,  '2' = 0.75, '3' = 0.5,  '4' = 0.25, '5' = 0))
+
+# Items for 'Value' Indicator
+WVS.5$Q76 <- as.factor(WVS.5$Q76)
+WVS.5$Q199 <- as.factor(WVS.5$Q199)
+WVS.5$Q238 <- as.factor(WVS.5$Q238)
+WVS.5$Q250 <- as.factor(WVS.5$Q250)
+
+WVS.5$Q76 <- recode(WVS.5$Q76, '1' = 1,  '2' = 0.66, '3' = 0.33,  '4' = 0)
+WVS.5$Q199 <- recode(WVS.5$Q199, '1' = 1,  '2' = 0.66, '3' = 0.33,  '4' = 0)
+WVS.5$Q238 <- recode(WVS.5$Q238, '1' = 1,  '2' = 0.66, '3' = 0.33,  '4' = 0)
+WVS.5$Q250 <- recode(WVS.5$Q250, '10' = 1,  '9' = 0.9, '8' = 0.8,  '7' = 0.7, '6' = 0.6, '5' = 0.5, '4' = 0.4, '3' = 0.3 , '2' = 0.2, '1' = 0) ## 1 not being 0.1, but 0
+
+table(WVS.5$Q250)
+
+# Items for 'Participation' Indicator
+WVS.5$Q98 <- as.factor(WVS.5$Q98)
+WVS.5$Q209 <- as.factor(WVS.5$Q209)
+WVS.5$Q211 <- as.factor(WVS.5$Q211)
+WVS.5$Q214 <- as.factor(WVS.5$Q214)
+WVS.5$Q215 <- as.factor(WVS.5$Q215)
+WVS.5$Q216 <- as.factor(WVS.5$Q216)
+WVS.5$Q221 <- as.factor(WVS.5$Q221)
+WVS.5$Q222 <- as.factor(WVS.5$Q222)
+
+WVS.5$Q98 <- recode(WVS.5$Q98, '2' = 1,  '1' = 0, '0' = 0)
+WVS.5$Q209 <- recode(WVS.5$Q209, '1' = 1,  '2' = 0, '3' = 0)
+WVS.5$Q211 <- recode(WVS.5$Q211, '1' = 1,  '2' = 0, '3' = 0)
+WVS.5$Q214 <- recode(WVS.5$Q214, '1' = 1,  '2' = 0, '3' = 0)
+WVS.5$Q215 <- recode(WVS.5$Q215, '1' = 1,  '2' = 0, '3' = 0)
+WVS.5$Q216 <- recode(WVS.5$Q216, '1' = 1,  '2' = 0, '3' = 0)
+WVS.5$Q221 <- recode(WVS.5$Q221, '1' = 1,  '2' = 1, '3' = 0,  '4' = 0)
+WVS.5$Q222 <- recode(WVS.5$Q222, '1' = 1,  '2' = 1, '3' = 0,  '4' = 0)
+
+table(WVS.5$Q222)
+
+## Creating Indicators based on Recoded Items
+
+# 'Knowledge' Indicator
+WVS.5$K.I <- (WVS.5$Q201 + WVS.5$Q202 + WVS.5$Q203 + WVS.5$Q204 + WVS.5$Q205 + WVS.5$Q206 + WVS.5$Q206 + WVS.5$Q208)/8
+summary(WVS.5$K.I)         ## quite a few NAs
+
+# 'Value' Indicator
+WVS.5$V.I <- (WVS.5$Q76 + WVS.5$Q199 + WVS.5$Q238 + WVS.5$Q250)/4
+summary(WVS.5$V.I)
+
+# 'Participation' Indicator
+WVS.5$P.I <- (WVS.5$Q98 + WVS.5$Q209 + WVS.5$Q211 + WVS.5$Q214 + WVS.5$Q215 + WVS.5$Q216 + WVS.5$Q221 + WVS.5$Q222)/8
+summary(WVS.5$P.I) 
+
+## Summing up to Create Competence Index
+WVS.5$C.I <- (WVS.5$K.I + WVS.5$V.I + WVS.5$P.I)    ## this can be converted to max.value = '1'
+summary(WVS.5$C.I)                                  ## NAs adding up
+
+```
+
+```{r Preliminary Regression}
+## Respondent Education
+summary(WVS.5$Q275)
+WVS.5$Q275 <- as.factor(WVS.5$Q275)
+# 0 Early childhood education (ISCED 0) / no education
+# 1 Primary education (ISCED 1)
+# 2 Lower secondary education (ISCED 2)
+# 3 Upper secondary education (ISCED 3)
+# 4 Post-secondary non-tertiary education (ISCED 4)
+# 5 Short-cycle tertiary education (ISCED 5)
+# 6 Bachelor or equivalent (ISCED 6)
+# 7 Master or equivalent (ISCED 7)
+# 8 Doctoral or equivalent (ISCED 8)
+library(dplyr)
+WVS.5$Q275 <- recode(WVS.5$Q275, '8' = 1,  '7' = 0.875, '6' = 0.75,  '5' = 0.625, '4' = 0.5, '3' = 0.375, '2' = 0.25, '1' = 0.125 , '0' = 0)
+
+
+## Preliminary Result
+
+prep.lm <- lm(WVS.5$C.I ~ WVS.5$Q275)
+summary(prep.lm)
+
+library(estimatr)
+prep.lm.rob <- lm_robust(WVS.5$C.I ~ WVS.5$Q275)
+summary(prep.lm.rob)
+
+## with country-fixed effect
+lm.cf <- lm_robust(C.I ~ Q275, fixed_effects = ~ B_COUNTRY, data = WVS.5)
+summary(lm.cf)
+
+```
+```{r Matching and Testing Balance}
+library(robustbase)
+library(optmatch)
+ps_mod <- lmrob(Q275 ~ Q288, data = WVS.5)
+ps_scores <- fitted(ps_mod)
+ps_dist <- match_on(ps_scores, z = WVS.5$Q275, data = WVS.5)  ## having trouble
+
+table(WVS.5$B_COUNTRY)
+
+library(coin)
+WVS.5$B_COUNTRY <- as.factor(WVS.5$B_COUNTRY)
+overall_test <- independence_test(Q288 ~ Q275|B_COUNTRY, data=WVS.5) ## Q288: Income level
+overall_test
+stargazer(overall_test)
+
+overall_test.add <- independence_test(Q288 + Q260 + Q262 ~ Q275|B_COUNTRY, data=WVS.5, na.rm = TRUE) 
+## Q260: Assumed Gender
+## Q262: Age
+overall_test.add
+```
+
+```{r Bootstrapping}
+W.TWN <- subset(WVS.5, B_COUNTRY_ALPHA == 'TWN')  ## Taiwan for example
+
+set.seed(2023) 
+samp.TWN <- sample_n(W.TWN[, c("C.I", "Q275")], size = 100, replace = FALSE)
+table(samp.TWN$C.I,samp.TWN$Q275,useNA="ifany")
+
+lm_small <- lm(C.I ~ Q275, data = samp.TWN)
+summary(lm_small)$coef
+
+nsamps <- 10000
+set.seed(12345)
+sampfits <- data.frame(t(replicate(nsamps, coef(lm(C.I ~ Q275,
+  data = sample_n(W.TWN[, c("C.I", "Q275")], size = 100, replace = FALSE)
+)))))
+
+summary(sampfits)
+```
+
+```{r False Positive and Power}
+library(broom)
+thelmTest <- tidy(lm(C.I ~ Q275 + B_COUNTRY, data = WVS.5)) %>% 
+filter(term == "Q275") %>% 
+dplyr::select(p.value)
+
+library(pwr)
+power <- pwr.f2.test(u = length(WVS.5$C.I) - 2, v = length(WVS.5$Q275) - 2, f2 = 0.6, sig.level = 0.05, power = NULL)
+power
+```
